@@ -70,4 +70,4 @@ for i in range(len(story_2)):
 sentences_df[0] = story_3
 print(sentences_df[0])
 
-frequency_of_words = freq_words(sentences_dict[0], 35)
+frequency_of_words = freq_words(sentences_df[0], 35)
