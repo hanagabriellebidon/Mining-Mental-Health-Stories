@@ -22,7 +22,7 @@ print(sentences_df)
 
 # https://github.com/prateekjoshi565/topic_modeling_online_reviews/blob/master/Mining_Online_Reviews_using_Topic_Modeling_%28LDA%29.ipynb
 # Get the 20 most frequent words in the mental health story
-def freq_words(x):
+def freq_words(x, terms = 30):
   all_words = ' '.join([text for text in x])
   all_words = all_words.split()
 
@@ -30,10 +30,10 @@ def freq_words(x):
   words_df = pd.DataFrame({'word':list(fdist.keys()), 'count':list(fdist.values())})
 
   # selecting top 20 most frequent words
-  d = words_df.nlargest(columns="count", n = x)
+  d = words_df.nlargest(columns="count", n = terms)
   plt.figure(figsize=(20,5))
   ax = sns.barplot(data=d, x= "word", y = "count")
   ax.set(ylabel = 'Count')
   plt.show()
 
-# frequency_of_words = freq_words(sentences_df[0])
+frequency_of_words = freq_words(sentences_df[0])
