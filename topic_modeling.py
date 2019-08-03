@@ -9,6 +9,12 @@ import re
 from nltk.corpus import stopwords
 import spacy
 
+import gensim
+from gensim import corpora
+
+import pyLDAvis
+import pyLDAvis.gensim
+
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -20,7 +26,6 @@ for index in range(len(sentences)):
     key = 'sentence_' + str(index)
     sentences_dict[key] = element
 sentences_df = pd.DataFrame.from_dict(sentences_dict, orient='index')
-print(sentences_df)
 
 # https://github.com/prateekjoshi565/topic_modeling_online_reviews/blob/master/Mining_Online_Reviews_using_Topic_Modeling_%28LDA%29.ipynb
 # Get the 20 most frequent words in the mental health story
@@ -58,16 +63,6 @@ def lemmatization(texts, tags=['NOUN', 'ADJ']):
         output.append([token.lemma_ for token in doc if token.pos_ in tags])
     return output
 tokenized_story = pd.Series(story).apply(lambda x: x.split())
-print(tokenized_story)
-print(len(tokenized_story))
 story_2 = lemmatization(tokenized_story)
-print(story_2)
-print(len(story_2))
-important_words_dict = {}
-for index in range(len(story_2)):
-    element = story_2[index]
-    key = 'words_' + str(index)
-    important_words_dict[key] = element
 
-important_words_df = pd.DataFrame.from_dict(important_words_dict, orient='index')
-frequency_of_words = freq_words(important_words_df[0], 35)
+frequency_of_words = freq_words(story, 35)
