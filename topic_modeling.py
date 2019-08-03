@@ -4,16 +4,9 @@ from nltk import FreqDist
 import pandas as pd
 pd.set_option("display.max_colwidth", 200)
 import numpy as np
-import json
 import re
 from nltk.corpus import stopwords
 import spacy
-
-import gensim
-from gensim import corpora
-
-import pyLDAvis
-import pyLDAvis.gensim
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -54,15 +47,5 @@ def remove_stopwords(rev):
 sentences_df[0] = sentences_df[0].apply(lambda x: ' '.join([w for w in x.split() if len(w)>2]))
 # remove stopwords from the text
 story = [remove_stopwords(r.split()) for r in sentences_df[0]]
-
-nlp = spacy.load('en_core_web_sm')
-def lemmatization(texts, tags=['NOUN', 'ADJ']):
-    output = []
-    for sent in texts:
-        doc = nlp(" ".join(sent))
-        output.append([token.lemma_ for token in doc if token.pos_ in tags])
-    return output
-tokenized_story = pd.Series(story).apply(lambda x: x.split())
-story_2 = lemmatization(tokenized_story)
 
 frequency_of_words = freq_words(story, 35)
