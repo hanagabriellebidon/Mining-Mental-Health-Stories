@@ -6,6 +6,8 @@ pd.set_option("display.max_colwidth", 200)
 import numpy as np
 import json
 import re
+from nltk.corpus import stopwords
+import spacy
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -36,4 +38,36 @@ def freq_words(x, terms = 30):
   ax.set(ylabel = 'Count')
   plt.show()
 
-frequency_of_words = freq_words(sentences_df[0])
+# remove unwanted characters, numbers and symbols
+sentences_df[0] = sentences_df[0].str.replace("[^a-zA-Z#]", " ")
+stop_words = stopwords.words('english')
+# function to remove stopwords
+def remove_stopwords(rev):
+  sentences_new = " ".join([i for i in rev if i not in stop_words])
+  return sentences_new
+# remove short words (length < 3)
+sentences_df[0] = sentences_df[0].apply(lambda x: ' '.join([w for w in x.split() if len(w)>2]))
+# remove stopwords from the text
+story = [remove_stopwords(r.split()) for r in sentences_df[0]]
+
+nlp = spacy.load('en_core_web_sm')
+def lemmatization(texts, tags=['NOUN', 'ADJ']):
+    output = []
+    for sent in texts:
+        doc = nlp(" ".join(sent))
+        output.append([token.lemma_ for token in doc if token.pos_ in tags])
+    return output
+tokenized_story = pd.Series(story).apply(lambda x: x.split())
+print(tokenized_story)
+print(len(tokenized_story))
+story_2 = lemmatization(tokenized_story)
+print(story_2)
+print(len(story_2))
+important_words_dict = {}
+for index in range(len(story_2)):
+    element = story_2[index]
+    key = 'words_' + str(index)
+    important_words_dict[key] = element
+
+important_words_df = pd.DataFrame.from_dict(important_words_dict, orient='index')
+frequency_of_words = freq_words(important_words_df[0], 35)
