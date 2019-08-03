@@ -20,6 +20,7 @@ for index in range(len(sentences)):
     sentences_dict[key] = element
 sentences_df = pd.DataFrame.from_dict(sentences_dict, orient='index')
 
+# https://github.com/prateekjoshi565/topic_modeling_online_reviews/blob/master/Mining_Online_Reviews_using_Topic_Modeling_%28LDA%29.ipynb
 # Get the 20 most frequent words in the mental health story
 def freq_words(x, terms = 30):
   all_words = ' '.join([text for text in x])
@@ -47,4 +48,24 @@ sentences_df[0] = sentences_df[0].apply(lambda x: ' '.join([w for w in x.split()
 # remove stopwords from the text
 story = [remove_stopwords(r.split()) for r in sentences_df[0]]
 
-frequency_of_words = freq_words(story, 35)
+nlp = spacy.load('en_core_web_sm')
+# Get the 20 most frequent words in the mental health story
+def lemmatization(texts, tags=['NOUN', 'ADJ']):
+    output = []
+    for sent in texts:
+        doc = nlp(" ".join(sent))
+        output.append([token.lemma_ for token in doc if token.pos_ in tags])
+    return output
+tokenized_story = pd.Series(story).apply(lambda x: x.split())
+print(tokenized_story)
+print(len(tokenized_story))
+story_2 = lemmatization(tokenized_story)
+print(story_2)
+print(len(story_2))
+important_words_dict = {}
+story_3 = []
+for i in range(len(story_2)):
+    story_3.append(' '.join(story_2[i]))
+
+sentences_df[0] = story_3
+frequency_of_words = freq_words(sentences_df[0], 35)
