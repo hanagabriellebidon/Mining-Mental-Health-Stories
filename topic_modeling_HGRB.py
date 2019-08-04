@@ -20,7 +20,6 @@ for index in range(len(sentences)):
     sentences_dict[key] = element
 sentences_df = pd.DataFrame.from_dict(sentences_dict, orient='index')
 
-# https://github.com/prateekjoshi565/topic_modeling_online_reviews/blob/master/Mining_Online_Reviews_using_Topic_Modeling_%28LDA%29.ipynb
 # Get the 20 most frequent words in the mental health story
 def freq_words(x, terms = 30):
   all_words = ' '.join([text for text in x])
